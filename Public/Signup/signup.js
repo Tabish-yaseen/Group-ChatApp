@@ -14,6 +14,7 @@ signUpForm.addEventListener('submit',(e)=>{
     }
     axios.post('http://localhost:3000/user/signup',details).then((res)=>{
             alert(res.data.message)
+            window.location.href='../Login/login.html'
         
        
     }).catch((error)=>{

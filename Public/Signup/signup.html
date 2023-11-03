@@ -6,21 +6,37 @@
     <title>Signup</title>
 </head>
 <body>
-    <form id="signupform">
-        <label for="name">Enter Your Name</label>
-        <input type="text" id="name"  name="username" required>
+    <div>
+        <form id="signupform">
+            <div>
+                <label for="name">Enter Your Name</label>
+                <input type="text" id="name"  name="username" required>
+    
+            </div>
+            <div> 
+                <label for="emai">Enter Your Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+           
+            <div>
+                <label for="phoneno">Enter Your Phone Number</label>
+                <input type="number" id="phoneno" name="phoneno">
 
-        <label for="emai">Enter Your Email</label>
-        <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div>
+                <label for="password">Enter Your Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            
+            <button type="submit">submit</button>
+        </form>
 
-        <label for="phoneno">Enter Your Phone Number</label>
-        <input type="number" id="phoneno" name="phoneno">
-        
-        <label for="password">Enter Your Password</label>
-        <input type="password" id="password" name="password" required>
-        
-        <button type="submit">submit</button>
-    </form>
+    </div>
+    
+    <a href="../Login/login.html">Already Have An Account? Login</a>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="signup.js"></script>
     

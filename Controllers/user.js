@@ -21,7 +21,7 @@ exports.signup=async(req,res)=>{
         const existingUser = await User.findOne({ where: { email: email } });
 
         if (existingUser) {
-            return res.status(400).json({ error: "User with this email already exists" });
+            return res.status(400).json({ error: "User with this email already exists.Please Login" });
         }
         const saltround=10
         const hash=await bcrypt.hash(password,saltround)

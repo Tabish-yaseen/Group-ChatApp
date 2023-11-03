@@ -13,6 +13,15 @@ signUpForm.addEventListener('submit',(e)=>{
         phoneno:phoneno.value
     }
     axios.post('http://localhost:3000/user/signup',details).then((res)=>{
-        console.log(res.data.message)
+            alert(res.data.message)
+        
+       
+    }).catch((error)=>{
+        if ( error.response.status === 400) {
+            alert(error.response.data.error);
+        } else {
+            console.error(error);
+            alert("An error occurred. Please try again later.");
+        }
     })
 })

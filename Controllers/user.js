@@ -18,6 +18,11 @@ exports.signup=async(req,res)=>{
         if(isStringInvalid(name) || isStringInvalid(email) || isStringInvalid(phoneno) || isStringInvalid(password)){
             return res.status(400).json({error:"something is missing"})
         }
+        const existingUser = await User.findOne({ where: { email: email } });
+
+        if (existingUser) {
+            return res.status(400).json({ error: "User with this email already exists" });
+        }
         const saltround=10
         const hash=await bcrypt.hash(password,saltround)
     
@@ -27,7 +32,7 @@ exports.signup=async(req,res)=>{
 
     }catch(err){
         console.log("err",err)
-        res.status(505).json({error:err})
+        res.status(500).json({error:err})
     }
     
 

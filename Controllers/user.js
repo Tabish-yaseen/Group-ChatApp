@@ -35,7 +35,35 @@ exports.signup=async(req,res)=>{
         res.status(500).json({error:err})
     }
     
+}
+
+exports.login=async(req,res)=>{
+    try{
+        const{email,password}=req.body
+
+        if(isStringInvalid(email) || isStringInvalid(password)){
+            return res.status(400).json({error:"something is missing"})
+        }
+        const user=await User.findOne({where:{email:email}})
+        if(user){
+            const matchedPassword=await bcrypt.compare(password,user.password)
+            if(matchedPassword){
+                res.status(200).json({success:true,message:"User Logged In Successfully!"})
+            }
+            else{
+                res.status(400).json({error:"Invalid Password"})
+            }
+            
+
+        }else{
+            res.status(400).json({error:"User with This Email Doesn't Exist!"})
+        }
 
 
+    }catch(err){
+        console.log(err)
+        res.status(500).json({error:err})
+
+    }
 
 }

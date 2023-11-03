@@ -1,12 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-// require('dotenv').config()
 
 const sequelize=require('./utils/database')
 
+// import models
+const User=require('./Models/user')
+const ChatMessage=require('./Models/chatmessage')
+
 // routes imported
 const userRoute=require('./Routes/user')
+const chatMessageRoute=require('./Routes/chatmessage')
 
 
 
@@ -18,8 +22,13 @@ app.use(bodyParser.json());
 app.use(cors({
     origin:'*'
 }));
-
+ // handling routes
 app.use('/user',userRoute)
+app.use('/chat',chatMessageRoute)
+
+// defining relations between the models
+User.hasMany(ChatMessage)
+ChatMessage.belongsTo(User)
 
 
 sequelize.sync({ force:false}).then(() => {

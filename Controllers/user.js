@@ -1,5 +1,12 @@
 const User=require('../Models/user')
 const bcrypt=require('bcryptjs')
+const jwt=require('jsonwebtoken')
+require('dotenv').config()
+
+
+function generateWebToken(id){
+   return jwt.sign({userId:id},process.env.SECRET_KEY)
+}
 
 function isStringInvalid(string){
     if(string==undefined && string.length==0){
@@ -48,7 +55,7 @@ exports.login=async(req,res)=>{
         if(user){
             const matchedPassword=await bcrypt.compare(password,user.password)
             if(matchedPassword){
-                res.status(200).json({success:true,message:"User Logged In Successfully!"})
+                res.status(200).json({success:true,message:"User Logged In Successfully!",token:generateWebToken(user.id)})
             }
             else{
                 res.status(400).json({error:"Invalid Password"})

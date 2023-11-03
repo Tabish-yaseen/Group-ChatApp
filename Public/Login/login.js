@@ -11,6 +11,8 @@ loginForm.addEventListener('submit',(e)=>{
     }
     console.log(details)
     axios.post('http://localhost:3000/user/login',details).then((res)=>{
+        const token=res.data.token
+        localStorage.setItem('token',token)
         if(res.status===200){
             alert(res.data.message)
         }

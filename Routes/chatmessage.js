@@ -5,7 +5,7 @@ const userAuthentication=require('../middleware/auth')
 
 router.post('/message',userAuthentication.authenticate,chatMessageController.message)
 
-router.get('/all-messages',chatMessageController.getAllMessages)
+router.get('/all-messages/:lastMessageId',chatMessageController.getAllMessages)
 
 module.exports=router
 

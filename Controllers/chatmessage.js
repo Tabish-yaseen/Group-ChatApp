@@ -1,6 +1,6 @@
 const ChatMessage=require('../Models/chatmessage')
 const User=require('../Models/user')
-// const sequelize=require('../utils/database')
+const Sequelize = require('sequelize')
 
 exports.message=async(req,res)=>{
     try{
@@ -16,17 +16,21 @@ exports.message=async(req,res)=>{
         res.status(500).json({ error: 'An error occurred while creating the message' })
     }
 }
-exports.getAllMessages=async(req,res)=>{
-    try{
-        const messages=await ChatMessage.findAll()
-        // if(messages.length==0){
-        //     return res.status(400).json({message:"no messages"})
-        // }
-        console.log(messages)
-        res.status(200).json({sucess:true,messages:messages})
+exports.getAllMessages = async (req, res) => {
+    try {
+        const lastMessageId = req.params.lastMessageId
+        // console.log(lastMessageId)
+        const messages = await ChatMessage.findAll({
+            where: {
+                id: {
+                    [Sequelize.Op.gt]: lastMessageId
+                }
+            }
+        })
 
-    }catch(err){
-        res.status(500).json({error:err})
-
+        
+        res.status(200).json({ success: true, messages: messages })
+    } catch (err) {
+        res.status(500).json({ error: err })
     }
 }

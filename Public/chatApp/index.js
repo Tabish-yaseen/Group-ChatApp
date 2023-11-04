@@ -11,6 +11,7 @@ chatForm.addEventListener('submit',(e)=>{
     }
     
     axios.post('http://localhost:3000/chat/message',data,{headers:{'Authorization':token}}).then((res)=>{
+        chatForm.reset()
         const message=res.data.message
         const userName=res.data.userName
         displayMessages(userName,message)
@@ -24,14 +25,26 @@ chatForm.addEventListener('submit',(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',()=>{
-    getAllMessages()
+    const messages=JSON.parse(localStorage.getItem('messages'))||[]
+    console.log("message",messages)
+    const lastMessage=messages[messages.length-1]
+    console.log('lastmessage',lastMessage)
+    const lastMessageId=lastMessage?lastMessage.id:0
+    console.log('id',lastMessageId)
+    
+    getAllMessages(lastMessageId)
     
     })
 
-function  getAllMessages(){
-    axios.get('http://localhost:3000/chat/all-messages').then((res)=>{
-        console.log(res.data.messages)
-        for(let chat of res.data.messages){
+function  getAllMessages(lastMessageId){
+    axios.get(`http://localhost:3000/chat/all-messages/${lastMessageId}`).then((res)=>{
+        const newMessages=res.data.messages
+        const oldMessages=JSON.parse(localStorage.getItem('messages'))||[]
+        const mergedMessages=[...oldMessages,...newMessages]
+        localStorage.setItem('messages',JSON.stringify(mergedMessages))
+        
+
+        for(let chat of mergedMessages){
             const userName=chat.userName
             const message=chat.messageContent
         

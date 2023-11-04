@@ -25,25 +25,31 @@ chatForm.addEventListener('submit',(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',()=>{
+
     const messages=JSON.parse(localStorage.getItem('messages'))||[]
-    console.log("message",messages)
+   
     const lastMessage=messages[messages.length-1]
-    console.log('lastmessage',lastMessage)
+   
     const lastMessageId=lastMessage?lastMessage.id:0
-    console.log('id',lastMessageId)
+    
     
     getAllMessages(lastMessageId)
     
     })
 
 function  getAllMessages(lastMessageId){
+
     axios.get(`http://localhost:3000/chat/all-messages/${lastMessageId}`).then((res)=>{
         const newMessages=res.data.messages
         const oldMessages=JSON.parse(localStorage.getItem('messages'))||[]
         const mergedMessages=[...oldMessages,...newMessages]
+        const maxMessages = 20;
+
+       while (mergedMessages.length > maxMessages) {
+         mergedMessages.shift() // remove the old messages
+        }
         localStorage.setItem('messages',JSON.stringify(mergedMessages))
         
-
         for(let chat of mergedMessages){
             const userName=chat.userName
             const message=chat.messageContent

@@ -4,8 +4,8 @@ const jwt=require('jsonwebtoken')
 require('dotenv').config()
 
 
-function generateWebToken(id){
-   return jwt.sign({userId:id},process.env.SECRET_KEY)
+function generateWebToken(id,name){
+   return jwt.sign({userId:id,userName:name},process.env.SECRET_KEY)
 }
 
 function isStringInvalid(string){
@@ -55,7 +55,7 @@ exports.login=async(req,res)=>{
         if(user){
             const matchedPassword=await bcrypt.compare(password,user.password)
             if(matchedPassword){
-                res.status(200).json({success:true,message:"User Logged In Successfully!",token:generateWebToken(user.id)})
+                res.status(200).json({success:true,message:"User Logged In Successfully!",token:generateWebToken(user.id,user.name)})
             }
             else{
                 res.status(400).json({error:"Invalid Password"})

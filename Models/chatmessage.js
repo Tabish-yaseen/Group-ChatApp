@@ -15,6 +15,10 @@ const ChatMessage=sequelize.define('chatMessage',{
     date:{
         type:DataTypes.DATE,
         allowNull:false
+    },
+    userName:{
+        type:DataTypes.STRING,
+        allowNull:false
     }
 })
 module.exports=ChatMessage

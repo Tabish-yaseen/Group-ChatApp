@@ -9,7 +9,6 @@ loginForm.addEventListener('submit',(e)=>{
         email:email.value,
         password:password.value
     }
-    console.log(details)
     axios.post('http://localhost:3000/user/login',details).then((res)=>{
         const token=res.data.token
         localStorage.setItem('token',token)

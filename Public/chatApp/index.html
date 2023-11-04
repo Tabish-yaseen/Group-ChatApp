@@ -6,28 +6,23 @@
     <title>Chat App</title>
 </head>
 <body>
-        <div class="user-list">
-            <h2>Users Online</h2>
-            <ul id="user-list">
-                <!-- List of online users goes here -->
-            </ul>
+    <div id="chatapp">
+        <h1>Chat App</h1>
+        <div id="userList">
+            <!-- User list will be populated here -->
         </div>
-        <div class="chat-box">
-            <div class="message-list">
-                <!-- Chat messages go here -->
-            </div>
-            <div class="message-input">
-                <form id="chatMessage" >
-                    <input type="text" id="message-input" placeholder="Type your message...">
-                    <button type="submit">Send</button>
-                </form>
-                
-            </div>
-        </div>
+        <div id="messages">
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+        </div>
+        <form id="chatform">
+            <input type="text" id="messageInput" placeholder="Type your message">
+            <button id="sendMessage">Send</button>
+        </form>
+        
+            
+       
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="index.js"></script>
-
-    
 </body>
 </html>

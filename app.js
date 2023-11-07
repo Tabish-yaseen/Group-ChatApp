@@ -9,6 +9,7 @@ const sequelize=require('./utils/database')
 const ChatMessage=require('./Models/chatmessage')
 const Group=require('./Models/group')
 const User=require('./Models/user')
+const UserGroup=require('./Models/usergroup')
 
 // routes imported
 const userRoute=require('./Routes/user')
@@ -33,8 +34,8 @@ User.hasMany(ChatMessage)
 ChatMessage.belongsTo(User)
 
 
-User.belongsToMany(Group,{ through: 'userGroup' })
-Group.belongsToMany(User,{ through: 'userGroup' })
+User.belongsToMany(Group,{ through: UserGroup })
+Group.belongsToMany(User,{ through: UserGroup })
 
 Group.hasMany(ChatMessage)
 ChatMessage.belongsTo(Group)

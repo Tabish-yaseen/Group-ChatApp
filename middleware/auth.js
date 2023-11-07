@@ -10,7 +10,7 @@ exports.authenticate=async(req,res,next)=>{
         req.user=user
         next()
     }catch(err){
-        res.status(401).json({ error: 'Authentication failed' });
+        res.status(401).json({ error: 'Authentication failed' })
         
     }
 

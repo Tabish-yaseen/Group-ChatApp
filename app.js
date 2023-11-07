@@ -5,8 +5,10 @@ const cors = require('cors');
 const sequelize=require('./utils/database')
 
 // import models
-const User=require('./Models/user')
+
 const ChatMessage=require('./Models/chatmessage')
+const Group=require('./Models/group')
+const User=require('./Models/user')
 
 // routes imported
 const userRoute=require('./Routes/user')
@@ -29,6 +31,13 @@ app.use('/chat',chatMessageRoute)
 // defining relations between the models
 User.hasMany(ChatMessage)
 ChatMessage.belongsTo(User)
+
+
+User.belongsToMany(Group,{ through: 'userGroup' })
+Group.belongsToMany(User,{ through: 'userGroup' })
+
+Group.hasMany(ChatMessage)
+ChatMessage.belongsTo(Group)
 
 
 sequelize.sync({ force:false}).then(() => {

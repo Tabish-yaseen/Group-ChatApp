@@ -5,7 +5,11 @@ const userAuthentication=require('../middleware/auth')
 
 router.post('/message',userAuthentication.authenticate,chatMessageController.message)
 
-router.get('/all-messages/:lastMessageId',chatMessageController.getAllMessages)
+router.get('/all-messages',chatMessageController.getAllGroupMessages)
+
+router.post('/createGroup',userAuthentication.authenticate,chatMessageController.createGroup)
+
+router.get('/all-groups',userAuthentication.authenticate,chatMessageController.getAllGroups)
 
 module.exports=router
 

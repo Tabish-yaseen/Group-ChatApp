@@ -118,7 +118,7 @@ exports.addParticipants = async (req, res) => {
 
         for (let id of usersId) {
             const user = await User.findByPk(id)
-            await user.addGroup(group)
+            await group.addUser(user)
         }
 
         res.status(200).json({ success: true, message: 'Participants added successfully' })

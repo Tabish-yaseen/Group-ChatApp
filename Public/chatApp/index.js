@@ -3,6 +3,18 @@ const messageDiv=document.querySelector('#messages')
 const participantForm=document.querySelector('#particpantsForm')
 
 const addParticipantsDiv=document.querySelector('#addParticipantsbtndiv')
+const userListDiv=document.querySelector('#userList')
+const leaveGroupdiv=document.querySelector('#leavegroup')
+
+function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+}
+
 
 window.addEventListener('DOMContentLoaded',()=>{
     getAllGroups()
@@ -52,7 +64,7 @@ function showGroupsOnScreen(groupLists){
 
 function getAllGroupMessages(groupId){
     displayUserListOfGroup(groupId)
-
+// add participant button
     addParticipantsDiv.innerHTML=''
     const addParticipantsBtn=document.createElement('button')
     addParticipantsBtn.textContent='Add More Participants'
@@ -62,6 +74,17 @@ function getAllGroupMessages(groupId){
     })
 
     addParticipantsDiv.appendChild(addParticipantsBtn)
+
+    // leave group button
+    leaveGroupdiv.innerHTML=''
+    const leavebutton=document.createElement('button')
+    leavebutton.textContent="Leave Group"
+    leavebutton.addEventListener('click',()=>{
+        leaveGroup(groupId)
+
+    })
+    leaveGroupdiv.appendChild(leavebutton)
+
 
     localStorage.setItem('groupId',groupId)
     
@@ -96,6 +119,21 @@ function getAllGroupMessages(groupId){
         }
 })
 }
+function  leaveGroup(groupId){
+    // const group=document.querySelector('#group')
+    const token=localStorage.getItem("token")
+    axios.delete(`http://localhost:3000/chat/leaveGroup/${groupId}`,{headers:{'Authorization':token}}).then((res)=>{
+        alert(res.data.message)
+        getAllGroups()
+        addParticipantsDiv.innerHTML=''
+        userListDiv.innerHTML=''
+        leaveGroupdiv.innerHTML=''
+        messageDiv.innerHTML=''
+       
+    })
+
+}
+
 
 function getParticipants(groupId){
     participantForm.innerHTML=''
@@ -113,9 +151,11 @@ function getParticipants(groupId){
         participantForm.innerHTML += `<button type="submit">Add</button>`;
 
     })
+
 }
+
 function displayUserListOfGroup(groupId){
-    const userListDiv=document.querySelector('#userList')
+    
     userListDiv.innerHTML=''
     axios.get(`http://localhost:3000/user/usersList/${groupId}`).then((res)=>{
         const groupName=res.data.groupName
@@ -154,6 +194,7 @@ function addParticipants(e){
     })   
 }
 
+
 const chatForm=document.querySelector('#chatform')
 
 chatForm.addEventListener('submit',(e)=>{
@@ -181,9 +222,20 @@ chatForm.addEventListener('submit',(e)=>{
 
 })
 
-function displayMessages(userName,message){
+function displayMessages(name,message){
+    const token=localStorage.getItem('token')
+
+    const dname = parseJwt(token).userName
+    console.log(dname)
     const p=document.createElement('p')
-    p.innerHTML=`${userName}: ${message}`
-    messageDiv.appendChild(p)
+    if(name===dname){
+        p.innerHTML=`You: ${message}`
+    }
+   else{
+    p.innerHTML=`${name}: ${message}`
+
+   }
+   messageDiv.appendChild(p)
+    
 
 }

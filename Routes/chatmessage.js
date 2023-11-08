@@ -11,5 +11,7 @@ router.post('/createGroup',userAuthentication.authenticate,chatMessageController
 
 router.get('/all-groups',userAuthentication.authenticate,chatMessageController.getAllGroups)
 
+router.delete('/leaveGroup/:groupId',userAuthentication.authenticate,chatMessageController.leaveGroup)
+
 module.exports=router
 

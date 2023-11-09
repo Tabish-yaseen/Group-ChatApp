@@ -5,6 +5,7 @@ const participantForm=document.querySelector('#particpantsForm')
 const addParticipantsDiv=document.querySelector('#addParticipantsbtndiv')
 const userListDiv=document.querySelector('#userList')
 const leaveGroupdiv=document.querySelector('#leavegroup')
+const makeChangesDiv=document.querySelector('#makeChanges')
 
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
@@ -63,14 +64,36 @@ function showGroupsOnScreen(groupLists){
 }
 
 function getAllGroupMessages(groupId){
-    displayUserListOfGroup(groupId)
-// add participant button
+
+    // make change button
+    makeChangesDiv.innerHTML=''
+    const makeChangesBtn=document.createElement('button')
+    makeChangesBtn.textContent='Make Changes'
+    makeChangesBtn.addEventListener('click',async()=>{
+        const isAdmin=await isUserAdmin(groupId)
+        if(isAdmin){
+            displayUserListOfGroup(groupId)
+
+        } else{
+            alert('only Admin can make changes')
+        }
+    })
+    makeChangesDiv.appendChild(makeChangesBtn)
+
+
+    
+    
+// add more particpants button
     addParticipantsDiv.innerHTML=''
     const addParticipantsBtn=document.createElement('button')
     addParticipantsBtn.textContent='Add More Participants'
-    addParticipantsBtn.addEventListener('click',()=>{
-        getParticipants(groupId)
-
+    addParticipantsBtn.addEventListener('click',async()=>{
+        const isAdmin =await isUserAdmin(groupId);
+    if (isAdmin) {
+        getParticipants(groupId);
+    } else {
+        alert('Only admin can add users.');
+    }
     })
 
     addParticipantsDiv.appendChild(addParticipantsBtn)
@@ -86,8 +109,9 @@ function getAllGroupMessages(groupId){
     leaveGroupdiv.appendChild(leavebutton)
 
 
-    localStorage.setItem('groupId',groupId)
     
+    localStorage.setItem('groupId',groupId)
+
     const messages=JSON.parse(localStorage.getItem(`localchat${groupId}`)) || []
    
     const lastMessage=messages[messages.length-1]
@@ -127,13 +151,13 @@ function  leaveGroup(groupId){
         getAllGroups()
         addParticipantsDiv.innerHTML=''
         userListDiv.innerHTML=''
+        makeChangesDiv.innerHTML=''
         leaveGroupdiv.innerHTML=''
         messageDiv.innerHTML=''
        
     })
 
 }
-
 
 function getParticipants(groupId){
     participantForm.innerHTML=''
@@ -155,43 +179,98 @@ function getParticipants(groupId){
 }
 
 function displayUserListOfGroup(groupId){
+    const token=localStorage.getItem('token')
+    const decodedUserId= parseJwt(token).userId
     
     userListDiv.innerHTML=''
     axios.get(`http://localhost:3000/user/usersList/${groupId}`).then((res)=>{
-        const groupName=res.data.groupName
-        const userList=res.data.userList
-       userListDiv.innerHTML+=`<p>${groupName}</p>`
+        const userList=res.data.List
+    //    userListDiv.innerHTML+=`<p>${groupName}</p>`
        for(let user of userList){
-        userListDiv.innerHTML+=`<span>${user.name}</span>, `
+        console.log(user)
+        if(user.isAdmin){
+            if(decodedUserId===user.userId){
+                userListDiv.innerHTML+='<div> You are admin</>'
+            } else{
+                userListDiv.innerHTML+=`<div>
+                ${user.name} Admin <button onClick="removeAdmin(${user.userId},${groupId})">Remove from Admin</button>
+                <button onClick="removeUser(${user.userId},${groupId})">Remove from Group</button>
+                </div>`
+            }
+           
+
+        }
+        else{
+            userListDiv.innerHTML+=`<div>
+            ${user.name}  <button onClick="makeAdmin(${user.userId},${groupId})">Make Admin</button>
+            <button onClick="removeUser(${user.userId},${groupId})">Remove from Group</button>
+            </div>`
+        }
        }
     })
 
 }
+function removeUser(userId,groupId){
+    axios.delete(`http://localhost:3000/chat/removeUser?userId=${userId}&groupId=${groupId}`).then((res)=>{
+        alert(res.data.message)
+        displayUserListOfGroup(groupId)
+    })
+
+}
+function  makeAdmin(userId,groupId){
+    axios.post(`http://localhost:3000/chat/makeAdmin?userId=${userId}&groupId=${groupId}`).then((res)=>{
+        alert(res.data.message)
+        displayUserListOfGroup(groupId)
+    })
+
+}
+
+function removeAdmin(userId,groupId){
+    axios.post(`http://localhost:3000/chat/removeAdmin?userId=${userId}&groupId=${groupId}`).then((res)=>{
+        alert(res.data.message)
+        displayUserListOfGroup(groupId)
+    })
+
+}
+
 
 function addParticipants(e){
     e.preventDefault()
-    const selectedUserId=[]
-
     const groupId=document.querySelector('#groupId')
-    const users=document.querySelectorAll('.user')
-    console.log(users)
-
-    for(let user of users){
-        if(user.checked){
-            selectedUserId.push(user.value)
-        }
-    }
-
-    const data={
-        usersId:selectedUserId,
-        groupId:groupId.value
-    }
     
-    axios.post('http://localhost:3000/user/add-Participants',data).then((res)=>{
-        participantForm.innerHTML=''
-        alert(res.data.message)
-        displayUserListOfGroup(groupId.value)
-    })   
+            const selectedUserId = []
+            const users = document.querySelectorAll('.user')
+
+            for (let user of users) {
+                if (user.checked) {
+                    selectedUserId.push(user.value)
+                }
+            }
+
+            const data = {
+                usersId: selectedUserId,
+                groupId: groupId.value
+            };
+
+            axios.post('http://localhost:3000/user/add-Participants', data).then((res) => {
+                participantForm.innerHTML = ''
+                alert(res.data.message)
+                displayUserListOfGroup(groupId.value)
+            });
+}
+
+function isUserAdmin(groupId) {
+    return new Promise((resolve, reject) => {
+        const token = localStorage.getItem('token')
+        axios.get(`http://localhost:3000/chat/isAdmin/${groupId}`,{headers:{'Authorization':token}})
+            .then((res) => {
+                resolve(res.data.isAdmin)
+            })
+            .catch((error) => {
+                reject(fasle)
+            })
+    })
+    
 }
 
 

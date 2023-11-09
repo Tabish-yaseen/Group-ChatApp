@@ -13,5 +13,12 @@ router.get('/all-groups',userAuthentication.authenticate,chatMessageController.g
 
 router.delete('/leaveGroup/:groupId',userAuthentication.authenticate,chatMessageController.leaveGroup)
 
+router.post('/makeAdmin',chatMessageController.makeAdmin)
+router.post('/removeAdmin',chatMessageController.removeAdmin)
+
+router.get('/isAdmin/:groupId',userAuthentication.authenticate,chatMessageController.checkAdmin)
+
+router.delete('/removeUser',chatMessageController.removeUser)
+
 module.exports=router
 

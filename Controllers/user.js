@@ -123,7 +123,7 @@ exports.addParticipants = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Participants added successfully' })
     } catch (err) {
-        console.error(err);
+        console.error(err)
         res.status(500).json({ error: err })
     }
 }
@@ -132,18 +132,28 @@ exports.getUserList=async(req,res)=>{
         const groupId=req.params.groupId
         const group=await Group.findByPk(groupId)
         const users=await group.getUsers({
-            attributes:['id','name']
+            attributes:['name'],
+            through:{
+                attributes:['isAdmin','userId']
+            }
         })
         // console.log(users)
-        if(users.length===0){
-            return res.status(200).json({success:true,userList:[]})
-        }
-        res.status(200).json({success:true,userList:users,groupName:group.groupName})
+       
+          const List = users.map((user) => {
+            return {
+                userId: user.usergroup.userId,
+                name: user.name,
+                isAdmin: user.usergroup.isAdmin,
+                group:group.groupName
+            }
+        })
+        
+        res.status(200).json({success:true,List:List})
         
 
 
     }catch (err) {
-        console.error(err);
+        console.error(err)
         res.status(500).json({ error: err })
     }
 }

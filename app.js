@@ -14,6 +14,7 @@ const UserGroup=require('./Models/usergroup')
 // routes imported
 const userRoute=require('./Routes/user')
 const chatMessageRoute=require('./Routes/chatmessage')
+const groupRoute=require('./Routes/group')
 
 
 
@@ -25,9 +26,11 @@ app.use(bodyParser.json());
 app.use(cors({
     origin:'*'
 }));
+
  // handling routes
 app.use('/user',userRoute)
 app.use('/chat',chatMessageRoute)
+app.use('/group',groupRoute)
 
 // defining relations between the models
 User.hasMany(ChatMessage)

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat box</title>
+</head>
+<body>
+    <nav>
+        <button id="leaveGroupBtn">Leave Group</button>
+        <button id="home">Home</button>
+
+        <div id="showParticipants">
+            <button id="showParticipantsbtn">Show participants</button>
+            <div id="showParticipantsDiv"></div>
+
+        </div>
+        
+        
+        <div id="makeChangeSection">
+            <button id="makeChangesbtn">Make Changes</button>
+            <form id="particpantsForm" onsubmit="addParticipants(event)">
+            </form>
+        </div>
+       
+        <div id="addParticipantsSection">
+            <button id="addParticipantBtn">Add More Participants</button>
+            <div id="userList"></div>
+        </div>
+        
+        
+    </nav>
+    <h1 id="groupName"></h1>
+    <div id="chatbox">
+        <div id="messages">
+
+        </div>
+        <div>
+            <form id="chatform">
+                <input type="text" id="messageInput" placeholder="Type your message">
+                <button id="sendMessage">Send</button>
+            </form>
+        </div>  
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="chat.js"></script>
+    
+</body>
+</html>

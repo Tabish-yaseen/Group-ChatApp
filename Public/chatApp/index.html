@@ -3,49 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
+    <title>main page</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
+
     <div>
         <button id="createGroup">create Group</button>
-        <div id="groupList"></div>
+        <button id="logout">logout</button>
+        <button id="home">Home</button>
+    </div>
+     <h1>CHAT APP</h1>
 
-        <a href="../Login/login.html">logout</a>
+
+    <div id="groupList">
+        
     </div>
 
-        <div id="group">
-            <div id="leavegroup"></div>
-        <div>
-            <div id="makeChanges"></div>
-            <div id="userList"></div>
-        </div>
-       
-        
-            <div>
-                <div id="addParticipantsbtndiv"></div>
-                <form id="particpantsForm" onsubmit="addParticipants(event)">
-                </form>
-            </div>
-           
-    
-        
-    
-    
-    <div id="chatapp">
-        <h1>Chat App</h1>
-    
-        
-        <div id="messages">
-
-        </div>
-        <div>
-            <form id="chatform">
-                <input type="text" id="messageInput" placeholder="Type your message">
-                <button id="sendMessage">Send</button>
-            </form>
-        </div>     
-    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="index.js"></script>
+    
 </body>
 </html>

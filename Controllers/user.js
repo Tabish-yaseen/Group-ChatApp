@@ -77,7 +77,7 @@ exports.login=async(req,res)=>{
 
 }
 
-exports.showParticipants = async (req, res) => {
+exports.getParticipants = async (req, res) => {
     try {
         const groupId = req.params.groupId
         const group = await Group.findByPk(groupId)
@@ -96,10 +96,10 @@ exports.showParticipants = async (req, res) => {
             attributes: ['id', 'name'],
             where: {
                 id: {
-                    [Sequelize.Op.notIn]: userIDsInGroup, // Use an array of user IDs
-                },
-            },
-        });
+                    [Sequelize.Op.notIn]: userIDsInGroup, 
+                }
+            }
+        })
 
         // console.log(usersNotInGroup)
         res.status(200).json({users:usersNotInGroup })
@@ -144,14 +144,11 @@ exports.getUserList=async(req,res)=>{
                 userId: user.usergroup.userId,
                 name: user.name,
                 isAdmin: user.usergroup.isAdmin,
-                group:group.groupName
             }
         })
         
         res.status(200).json({success:true,List:List})
         
-
-
     }catch (err) {
         console.error(err)
         res.status(500).json({ error: err })

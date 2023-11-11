@@ -12,10 +12,6 @@ const ChatMessage=sequelize.define('chatMessage',{
         type:DataTypes.TEXT,
         allowNull: false
     },
-    date:{
-        type:DataTypes.DATE,
-        allowNull:false
-    },
     userName:{
         type:DataTypes.STRING,
         allowNull:false

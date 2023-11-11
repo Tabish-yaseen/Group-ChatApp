@@ -32,10 +32,16 @@
     </nav>
     <h1 id="groupName"></h1>
     <div id="chatbox">
-        <div id="messages">
+        <div id="messages"></div>
 
+        <div id="fileUploadSection">
+            <form onsubmit="uploadFile(event)">
+                <input type="file" id="fileInput" accept="image/*">
+                <button type="submit">send File</button>
+            </form>
         </div>
-        <div>
+
+        <div id="chatFormSection">
             <form id="chatform">
                 <input type="text" id="messageInput" placeholder="Type your message">
                 <button id="sendMessage">Send</button>

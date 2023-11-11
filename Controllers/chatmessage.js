@@ -3,6 +3,7 @@ const User=require('../Models/user')
 const Group=require('../Models/group')
 const user_Groups=require('../Models/usergroup')
 const Sequelize = require('sequelize')
+const s3Services=require('../services/s3services')
 
 exports.postMessage=async(req,res)=>{
     try{
@@ -41,5 +42,23 @@ exports.getAllGroupMessages = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({ error: err })
+    }
+}
+exports.uploadFile=async(req,res)=>{
+    try{
+        const user=req.user
+        const file=req.file
+        const groupId=req.body.groupId
+        const fileName=`chat${user.id}/${new Date()}`
+        const fileURL= await s3Services.uploadToS3 (file,fileName) 
+        // console.log(fileURL)
+        const date=new Date()
+       const message=await user.createChatMessage({messageContent:fileURL,date:date,userName:user.name,groupId:groupId})
+       res.status(200).json({userName:user.name,message:message.messageContent} )
+
+
+
+    }catch(err){
+        console.log(err)
     }
 }

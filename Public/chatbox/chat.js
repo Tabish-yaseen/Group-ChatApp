@@ -7,6 +7,7 @@ function parseJwt(token) {
     return JSON.parse(jsonPayload);
 }
 
+
 const messageDiv=document.querySelector('#messages')
 
 const participantForm=document.querySelector('#particpantsForm')
@@ -14,6 +15,7 @@ const participantForm=document.querySelector('#particpantsForm')
 const userListDiv=document.querySelector('#userList')
 
 const showParticipantsDiv=document.querySelector('#showParticipantsDiv')
+
 const groupName=document.querySelector('#groupName')
 
 
@@ -23,6 +25,34 @@ home.addEventListener('click',()=>{
 })
 
 
+function uploadFile(e){
+    e.preventDefault()
+    const token=localStorage.getItem('token')
+    const groupId=localStorage.getItem('selectedGroupId')
+    const fileInput=document.querySelector('#fileInput')
+    const uploadedFile=fileInput.files[0]
+
+    if (!uploadedFile) {
+        alert('No file selected')
+        return
+    }
+
+    const formData = new FormData()
+    formData.append('groupId', groupId)
+    formData.append('file', uploadedFile)
+
+    axios.post('http://localhost:3000/chat/add-file', formData, {headers: {
+            'Authorization': token,
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then((res) => {
+        const message=res.data.message
+        const userName=res.data.userName
+        displayMessages(userName,message)
+    })
+}
+
+
 const chatForm=document.querySelector('#chatform')
 
 chatForm.addEventListener('submit',(e)=>{
@@ -30,8 +60,10 @@ chatForm.addEventListener('submit',(e)=>{
     const groupId=localStorage.getItem('selectedGroupId')
     const token=localStorage.getItem('token')
     const messageInput=document.querySelector('#messageInput')
+    const fileInput=document.querySelector('#fileInput')
+    console.log(fileInput.value)
 
-    if(!messageInput.value){
+    if(!messageInput.value || fileInput.value){
         return
     }
     
@@ -44,6 +76,7 @@ chatForm.addEventListener('submit',(e)=>{
         chatForm.reset()
         const message=res.data.message
         const userName=res.data.userName
+        // socket.emit('user-message', message) 
         displayMessages(userName,message)
 
 
@@ -55,6 +88,8 @@ chatForm.addEventListener('submit',(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',()=>{
+    
+    
     const groupId=localStorage.getItem('selectedGroupId')
     
     groupName.innerHTML=`${localStorage.getItem('selectedGroupName')}`
@@ -94,6 +129,12 @@ window.addEventListener('DOMContentLoaded',()=>{
     })
 
 
+    // socket.on('message', (message) => {
+    //     displayMessages('name', message)
+    // })
+
+
+
 
 function displayMessages(name,message){
     const token=localStorage.getItem('token')
@@ -101,15 +142,23 @@ function displayMessages(name,message){
     const decodedname = parseJwt(token).userName
     // console.log(dname)
     const p=document.createElement('p')
-    if(name===decodedname){
-        p.innerHTML=`You: ${message}`
-    }
-   else{
-    p.innerHTML=`${name}: ${message}`
+    const isImage = message.startsWith('https://expensetrackingapp98.s3.amazonaws.com/')
 
-   }
-   messageDiv.appendChild(p)
-    
+    if (isImage) {
+        if (name === decodedname) {
+            p.innerHTML = `You: <img src="${message}" alt="${name}'s Image" style="width:20vw;height:auto">`
+        } else {
+            p.innerHTML = `${name}: <img src="${message}" alt="${name}'s Image" style="width:20vw;height:auto">`
+        }
+    } else {
+        if (name === decodedname) {
+            p.innerHTML = `You: ${message}`
+        } else {
+            p.innerHTML = `${name}: ${message}`
+        }
+    }
+
+    messageDiv.appendChild(p);
 
 }
 
@@ -193,8 +242,7 @@ function displayUserListOfGroup(groupId){
                 ${user.name} Admin <button onClick="removeAdmin(${user.userId},${groupId})">Remove from Admin</button>
                 <button onClick="removeUser(${user.userId},${groupId})">Remove from Group</button>
                 </div>`
-            }
-           
+            }           
 
         }
         else{

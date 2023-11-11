@@ -10,18 +10,21 @@ const ChatMessage=require('./Models/chatmessage')
 const Group=require('./Models/group')
 const User=require('./Models/user')
 const UserGroup=require('./Models/usergroup')
+const ForgotPassword=require('./Models/forgotpassword')
 
 // routes imported
 const userRoute=require('./Routes/user')
 const chatMessageRoute=require('./Routes/chatmessage')
 const groupRoute=require('./Routes/group')
+const passwordRoute=require('./Routes/password')
 
 
 
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors({
     origin:'*'
@@ -31,6 +34,7 @@ app.use(cors({
 app.use('/user',userRoute)
 app.use('/chat',chatMessageRoute)
 app.use('/group',groupRoute)
+app.use('/password', passwordRoute);
 
 // defining relations between the models
 User.hasMany(ChatMessage)
@@ -42,6 +46,9 @@ Group.belongsToMany(User,{ through: UserGroup })
 
 Group.hasMany(ChatMessage)
 ChatMessage.belongsTo(Group)
+
+User.hasMany(ForgotPassword)
+ForgotPassword.belongsTo(User)
 
 
 sequelize.sync({ force:false}).then(() => {

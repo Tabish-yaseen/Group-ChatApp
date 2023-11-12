@@ -10,11 +10,11 @@ function parseJwt(token) {
 
 const messageDiv=document.querySelector('#messages')
 
-const participantForm=document.querySelector('#particpantsForm')
 
-const userListDiv=document.querySelector('#userList')
-
-const showParticipantsDiv=document.querySelector('#showParticipantsDiv')
+const logout=document.querySelector('#logout')
+logout.addEventListener('click',()=>{
+    window.location.href='../Login/login.html'
+})
 
 const groupName=document.querySelector('#groupName')
 
@@ -60,10 +60,9 @@ chatForm.addEventListener('submit',(e)=>{
     const groupId=localStorage.getItem('selectedGroupId')
     const token=localStorage.getItem('token')
     const messageInput=document.querySelector('#messageInput')
-    const fileInput=document.querySelector('#fileInput')
-    console.log(fileInput.value)
+    
 
-    if(!messageInput.value || fileInput.value){
+    if(!messageInput.value){
         return
     }
     
@@ -88,8 +87,68 @@ chatForm.addEventListener('submit',(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',()=>{
+    getAllGroupMessages()
+    getAllGroups()
     
+    })
+
+
+    // socket.on('message', (message) => {
+    //     displayMessages('name', message)
+    // })
+
+    const creatGroupBtn=document.querySelector('#createGroup')
+    creatGroupBtn.addEventListener('click',(e)=>{
+        e.preventDefault()
+        const groupName=prompt('Enter your group name');
+        createGroup(groupName)
+    })
     
+    function createGroup(groupName){
+        const token=localStorage.getItem('token')
+        // console.log(token)
+        const data={
+            groupName:groupName
+        }
+        axios.post('http://localhost:3000/group/createGroup',data,{headers:{'Authorization':token}}).then((res)=>{
+            alert(res.data.message)
+            getAllGroups()
+        })
+    
+    }
+    
+    function getAllGroups(){
+        const token=localStorage.getItem('token')
+        axios.get('http://localhost:3000/group/all-groups',{headers:{'Authorization':token}}).then((res)=>{
+            // console.log(res.data.user_Groups)
+              const groupLists=res.data.user_Groups
+                showGroupsOnScreen(groupLists)        
+        })
+    }
+    
+    function showGroupsOnScreen(groupLists){
+    
+        const groupListDiv=document.querySelector('#groupList')
+        groupListDiv.innerHTML=''
+    
+        for(let group of groupLists){
+            const div=document.createElement('div')
+            const GroupBtn=document.createElement('button')
+            GroupBtn.textContent=`${group.groupName}`
+            GroupBtn.addEventListener('click',()=>{
+                localStorage.setItem('selectedGroupId', group.id)
+                localStorage.setItem('selectedGroupName',group.groupName)
+                getAllGroupMessages()
+    
+            })
+            div.appendChild(GroupBtn)
+            groupListDiv.appendChild(div)
+            
+        }        
+    }
+
+function  getAllGroupMessages(){
+
     const groupId=localStorage.getItem('selectedGroupId')
     
     groupName.innerHTML=`${localStorage.getItem('selectedGroupName')}`
@@ -125,14 +184,9 @@ window.addEventListener('DOMContentLoaded',()=>{
             displayMessages(userName,message)
         }
 })
-    
-    })
 
 
-    // socket.on('message', (message) => {
-    //     displayMessages('name', message)
-    // })
-
+}
 
 
 
@@ -177,165 +231,31 @@ function isUserAdmin(groupId) {
     
 }
 
-// show participants button
-const showParticipantsbtn=document.querySelector('#showParticipantsbtn')
 
-   showParticipantsbtn.addEventListener('click',()=>{
-
-    const token=localStorage.getItem('token')
-    const decodedUserId= parseJwt(token).userId
-
-    showParticipantsDiv.innerHTML=''
-
-     const groupId=localStorage.getItem('selectedGroupId')
-
-    axios.get(`http://localhost:3000/user/usersList/${groupId}`).then((res)=>{
-        const userList=res.data.List
-       for(let user of userList){
-        if(user.isAdmin){
-            if(decodedUserId===user.userId){
-               showParticipantsDiv.innerHTML+=`<div> You - Admin</>`
-            } else{
-                showParticipantsDiv.innerHTML+=`<div>${user.name} - Admin</div>`
-            }
-           
-
-        }
-        else{
-            showParticipantsDiv.innerHTML+=`<div>${user.name}</div>`
-        }
-       }
-    })
-
-})
 
 // make change button
-const  makeChangesBtn=document.querySelector('#makeChangesbtn')
+const  showParticipants=document.querySelector('#showParticipants')
 
-makeChangesBtn.addEventListener('click',async()=>{
-    const groupId=localStorage.getItem('selectedGroupId')
-    const isAdmin=await isUserAdmin(groupId)
-        if(isAdmin){
-            displayUserListOfGroup(groupId)
-
-        } else{
-            alert('only Admin can make changes')
-        }
+showParticipants.addEventListener('click',()=>{
+    window.location.href='../Participants/showParticipants.html'
 
 })
 
-// function used to display user list to make changes
-function displayUserListOfGroup(groupId){
-    const token=localStorage.getItem('token')
-    const decodedUserId= parseJwt(token).userId
-    
-    userListDiv.innerHTML=''
-    axios.get(`http://localhost:3000/user/usersList/${groupId}`).then((res)=>{
-        const userList=res.data.List
-       for(let user of userList){
-        // console.log(user)
-        if(user.isAdmin){
-            if(decodedUserId===user.userId){
-                userListDiv.innerHTML+='<div> You are admin</>'
-            } else{
-                userListDiv.innerHTML+=`<div>
-                ${user.name} Admin <button onClick="removeAdmin(${user.userId},${groupId})">Remove from Admin</button>
-                <button onClick="removeUser(${user.userId},${groupId})">Remove from Group</button>
-                </div>`
-            }           
-
-        }
-        else{
-            userListDiv.innerHTML+=`<div>
-            ${user.name}  <button onClick="makeAdmin(${user.userId},${groupId})">Make Admin</button>
-            <button onClick="removeUser(${user.userId},${groupId})">Remove from Group</button>
-            </div>`
-        }
-       }
-    })
-
-}
-// function used to remove user from the group
-function removeUser(userId,groupId){
-    axios.delete(`http://localhost:3000/group/removeUser?userId=${userId}&groupId=${groupId}`).then((res)=>{
-        alert(res.data.message)
-        displayUserListOfGroup(groupId)
-    })
-
-}
-// function used to make a users admin
-function  makeAdmin(userId,groupId){
-    axios.post(`http://localhost:3000/group/makeAdmin?userId=${userId}&groupId=${groupId}`).then((res)=>{
-        alert(res.data.message)
-        displayUserListOfGroup(groupId)
-    })
-
-}
-// function used to remove the user from the admin
-function removeAdmin(userId,groupId){
-    axios.post(`http://localhost:3000/group/removeAdmin?userId=${userId}&groupId=${groupId}`).then((res)=>{
-        alert(res.data.message)
-        displayUserListOfGroup(groupId)
-    })
-
-}
 
 // add participants btn
 const addParticipantsBtn=document.querySelector('#addParticipantBtn')
 
   addParticipantsBtn.addEventListener('click',async()=>{
+   
     const groupId=localStorage.getItem('selectedGroupId')
   const isAdmin =await isUserAdmin(groupId);
      if (isAdmin) {
-      getParticipants(groupId);
+        window.location.href='../Participants/addParticipants.html'
       } else {
-    alert('Only admin can add users.');
+    alert('Only admin can add users.')
      }
    })
 
-// function used to get participants 
-   function getParticipants(groupId){
-    participantForm.innerHTML=''
-    axios.get(`http://localhost:3000/user/participants/${groupId}`).then((res)=>{
-        const users=res.data.users
-        if(users.length===0){
-           return  alert('All the users are added in your Group,there is no more users')
-        }
-        for(let user of users){
-            participantForm.innerHTML+=`
-           <div><input type='checkbox' class="user" name="user" value="${user.id}">${user.name}</div>
-            `
-        }
-        
-        participantForm.innerHTML += `<button type="submit">Add</button>`;
-
-    })
-
-}
-// function used to add the participants
-function addParticipants(e){
-    e.preventDefault()
-    const groupId=localStorage.getItem('selectedGroupId')
-            const selectedUserId = []
-            const users = document.querySelectorAll('.user')
-
-            for (let user of users) {
-                if (user.checked) {
-                    selectedUserId.push(user.value)
-                }
-            }
-
-            const data = {
-                usersId: selectedUserId,
-                groupId: groupId
-            };
-
-            axios.post('http://localhost:3000/user/add-Participants', data).then((res) => {
-                participantForm.innerHTML = ''
-                alert(res.data.message)
-                
-            });
-}
 
 // leave group button
  const leavebutton=document.querySelector('#leaveGroupBtn')
@@ -345,7 +265,7 @@ function addParticipants(e){
     const token=localStorage.getItem("token")
     axios.delete(`http://localhost:3000/group/leaveGroup/${groupId}`,{headers:{'Authorization':token}}).then((res)=>{
         alert(res.data.message)
-        window.location.href='../chatApp/index.html'
+        window.location.href='../chatApp/chat.html'
        
     })
 

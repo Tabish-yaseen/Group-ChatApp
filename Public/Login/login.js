@@ -14,7 +14,7 @@ loginForm.addEventListener('submit',(e)=>{
         localStorage.setItem('token',token)
         if(res.status===200){
             alert(res.data.message)
-            window.location.href='../chatApp/index.html'
+            window.location.href='../chatApp/chat.html'
         }
 
     }).catch((error)=>{

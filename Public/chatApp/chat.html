@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat box</title>
+    <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+    <nav>
+        <div> <button id="createGroup">Create Group</button>
+            <button id="logout">Logout</button></div>
+       
+        <button id="home">Home</button>
+        <button id="showParticipants">Show Participants</button>
+        <button id="addParticipantBtn">Add Participants</button>
+        <button id="leaveGroupBtn">Leave Group</button>
+    </nav>
+    <div id="container">
+        <div id="groupList">
+            <!-- Your dynamically added group buttons will go here -->
+        </div>
+        <div id="chatContainer">
+            <h1 id="groupName">CHAT APP</h1>
+            <div id="chatbox">
+                <div id="messages"></div>
+                <div id="fileUploadSection">
+                    <form onsubmit="uploadFile(event)">
+                        <input type="file" id="fileInput" accept="image/*">
+                        <button type="submit">Upload</button>
+                    </form>
+                </div>
+                <div id="chatFormSection">
+                    <form id="chatform">
+                        <input type="text" id="messageInput" placeholder="Type your message">
+                        <button id="sendMessage">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

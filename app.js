@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path=require('path')
 
 const sequelize=require('./utils/database')
 
@@ -19,8 +20,6 @@ const groupRoute=require('./Routes/group')
 const passwordRoute=require('./Routes/password')
 
 
-
-
 const app = express();
 
 app.use(bodyParser.json())
@@ -35,6 +34,13 @@ app.use('/user',userRoute)
 app.use('/chat',chatMessageRoute)
 app.use('/group',groupRoute)
 app.use('/password', passwordRoute);
+
+
+app.use((req, res) => {
+    console.log(req.url)
+    console.log("req is completed ")
+    res.sendFile(path.join(__dirname, `public/${req.url}` ));
+});
 
 // defining relations between the models
 User.hasMany(ChatMessage)

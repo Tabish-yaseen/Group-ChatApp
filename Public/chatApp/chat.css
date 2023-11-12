@@ -1,0 +1,132 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: #128C7E;
+    color: white;
+    padding: 10px;
+}
+
+nav button {
+    background-color: #25D366;
+    color: white;
+    border: none;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+nav button:hover {
+    background-color: #128C7E;
+}
+
+#container {
+    display: flex;
+}
+
+#groupList {
+    background-color: #128C7E;
+    color: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 20%;
+}
+
+#groupList button {
+    width: 100%;
+    text-align: left;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    padding: 15px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    margin: 0 0 10px;
+}
+
+#groupList button:hover {
+    background-color: #45a049;
+}
+
+#chatContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+#groupName {
+    text-align: center;
+}
+
+#chatbox {
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    overflow-y: auto;
+}
+
+#messages {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 15px;
+}
+
+#messages div {
+    margin-bottom: 10px;
+}
+
+#fileUploadSection,
+#chatFormSection {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#fileInput {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#fileInput,
+#chatFormSection input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#fileInput,
+#chatFormSection button {
+    margin-right: 10px;
+}
+
+#fileUploadSection button,
+#chatFormSection button {
+    background-color: #25D366;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#fileUploadSection button:hover,
+#chatFormSection button:hover {
+    background-color: #128C7E;
+}
